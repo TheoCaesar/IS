@@ -1,4 +1,4 @@
-from dataclasses import dataclasses
+from dataclasses import dataclass
 
 @dataclass(frozen = True)
 class SphericalFuzzyNumber:    
