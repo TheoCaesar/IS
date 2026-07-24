@@ -4,6 +4,7 @@ from src.swam import swam
 from src.models import SphericalFuzzyNumber
 from src.sf_swara import sf_swara
 from src.sf_edas import sf_edas
+from src.validation import validate
 
 
 def run_lookup(lookup: {}):
@@ -73,6 +74,8 @@ def test_swara(data, lookup):
     print("\nNormalized Weights")
     for criterion, weight in results["weights"].items():
         print(f"{criterion}: {weight:.6f}")
+    
+    return results;
 
 def test_edas(data, lookup):
     expert_weights = [0.25, 0.25, 0.25, 0.25]
@@ -143,6 +146,8 @@ def test_edas(data, lookup):
     print("\n=== Final Ranking ===")
     for strategy, score in edas_results["ranking"]:
         print(f"{strategy}: {score:.6f}")
+    
+    return edas_results;
 
 def main():
     data = load_all_files();
@@ -151,8 +156,11 @@ def main():
     # run_lookup(lookup);
     # run_scores(lookup)
     # test_swam()
-    # test_swara(data, lookup)
-    test_edas(data, lookup);
+
+    swara_results =  test_swara(data, lookup)
+    edas_results = test_edas(data, lookup);
+
+    validate( swara_results, edas_results)
 
 if __name__ == "__main__":
     main()
