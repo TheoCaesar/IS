@@ -1,0 +1,80 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{ayyildiz2026}{article}{}{}
+      \name{author}{6}{}{%
+        {{hash=c3548d23f1858a069e623ebbdc50d8a3}{%
+           family={Ayyildiz},
+           familyi={A\bibinitperiod},
+           given={Ertugrul},
+           giveni={E\bibinitperiod}}}%
+        {{hash=7b68ca50519c506453fed3aa56e93a30}{%
+           family={Bouraima},
+           familyi={B\bibinitperiod},
+           given={Mouhamed\bibnamedelima Bayane},
+           giveni={M\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+        {{hash=76c5ba1e0af93661f1255c549ab78024}{%
+           family={Kose},
+           familyi={K\bibinitperiod},
+           given={Yavuz},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=92f9eb91e3c35c8e933774a844333130}{%
+           family={Murat},
+           familyi={M\bibinitperiod},
+           given={Mehmet},
+           giveni={M\bibinitperiod}}}%
+        {{hash=dcab8aa28dd1c1dad8ca2bf01ac57296}{%
+           family={Karaca},
+           familyi={K\bibinitperiod},
+           given={Tolga\bibnamedelima Kudret},
+           giveni={T\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=1d6859101a49a396293efa1997c23945}{%
+           family={Yalcin\bibnamedelima Kavus},
+           familyi={Y\bibinitperiod\bibinitdelim K\bibinitperiod},
+           given={Bahar},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{e25f779eb7bd1d8ac5b236b32af69e2e}
+      \strng{fullhash}{f740505827eec162c9db50fbbb4fffcd}
+      \strng{fullhashraw}{f740505827eec162c9db50fbbb4fffcd}
+      \strng{bibnamehash}{e25f779eb7bd1d8ac5b236b32af69e2e}
+      \strng{authorbibnamehash}{e25f779eb7bd1d8ac5b236b32af69e2e}
+      \strng{authornamehash}{e25f779eb7bd1d8ac5b236b32af69e2e}
+      \strng{authorfullhash}{f740505827eec162c9db50fbbb4fffcd}
+      \strng{authorfullhashraw}{f740505827eec162c9db50fbbb4fffcd}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IET Intelligent Transport Systems}
+      \field{title}{Decision-Making Framework for Pedestrian Safety Optimisation in Bus Rapid Transit Systems}
+      \field{volume}{20}
+      \field{year}{2026}
+      \field{pages}{e70263}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1049/itr2.70263
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
