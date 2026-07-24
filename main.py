@@ -3,6 +3,7 @@ from src.spherical_fuzzy import score
 from src.swam import swam
 from src.models import SphericalFuzzyNumber
 from src.sf_swara import sf_swara
+from src.sf_edas import sf_edas
 
 
 def run_lookup(lookup: {}):
@@ -73,6 +74,76 @@ def test_swara(data, lookup):
     for criterion, weight in results["weights"].items():
         print(f"{criterion}: {weight:.6f}")
 
+def test_edas(data, lookup):
+    expert_weights = [0.25, 0.25, 0.25, 0.25]
+    criteria_df = data["criteria"]
+    criteria_evaluations_df = data["criteria_eval"]
+    strategy_evaluations_df = data["strategy_eval"]
+
+    swara_results = sf_swara(
+        criteria_df,
+        criteria_evaluations_df,
+        lookup,
+        expert_weights
+    )
+
+    criterion_weights = swara_results["weights"]
+
+    criterion_types = {
+        "C1": "benefit",
+        "C2": "benefit",
+        "C3": "benefit",
+        "C4": "benefit",
+        "C5": "benefit",
+    }
+
+    edas_results = sf_edas(
+        strategy_evaluations_df,
+        lookup,
+        expert_weights,
+        criterion_weights,
+        criterion_types
+    )
+    # ========================================================================
+    # print(swara_results["weights"])
+    # print()
+    # print(edas_results["average_scores"] )
+    # print()
+    # print(edas_results["p_plus"])
+    # print()
+    # print(edas_results["n_minus"])
+    # print()
+    # print(edas_results["normalized_p"])
+    # print()
+    # print(edas_results["normalized_n"])
+    # print()
+    # print(edas_results["ranking"])
+    # # ========================================================================
+
+    print("\n=== Criterion Weights ===")
+    for c, w in criterion_weights.items():
+        print(c, round(w, 6))
+
+    print("\n=== Average Scores ===")
+    for c, s in edas_results["average_scores"].items():
+        print(c, round(s, 6))
+
+    print("\n=== PDA ===")
+    print(edas_results["pda"])
+
+    print("\n=== NDA ===")
+    print(edas_results["nda"])
+
+    print("\n=== P+ ===")
+    print(edas_results["p_plus"])
+
+    print("\n=== N- ===")
+    print(edas_results["n_minus"])
+
+    print("\n=== Final Ranking ===")
+    for strategy, score in edas_results["ranking"]:
+        print(f"{strategy}: {score:.6f}")
+
 def main():
     data = load_all_files();
     lookup = build_lingusitic_lookup(data['linguistic'])
@@ -80,7 +151,8 @@ def main():
     # run_lookup(lookup);
     # run_scores(lookup)
     # test_swam()
-    test_swara(data, lookup)
+    # test_swara(data, lookup)
+    test_edas(data, lookup);
 
 if __name__ == "__main__":
     main()

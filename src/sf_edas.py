@@ -1,5 +1,5 @@
 from .swam import swam
-from .fuzzy import score
+from .spherical_fuzzy import score
 
 
 def aggregate_decision_matrix(
@@ -9,7 +9,6 @@ def aggregate_decision_matrix(
 ):
     """
     Equations A16–A18
-
     Build the aggregated spherical fuzzy decision matrix
     using the SWAM operator.
 
@@ -23,7 +22,31 @@ def aggregate_decision_matrix(
             }
         }
     """
-    pass
+    decision_matrix = {}
+
+    for _, row in strategy_evaluations_df.iterrows():
+
+        strategy = row["strategy"]
+        criterion = row["criterion"]
+
+        sfns = [
+            lookup[row["E1"]],
+            lookup[row["E2"]],
+            lookup[row["E3"]],
+            lookup[row["E4"]],
+        ]
+
+        aggregated = swam(
+            sfns,
+            expert_weights
+        )
+
+        if strategy not in decision_matrix:
+            decision_matrix[strategy] = {}
+
+        decision_matrix[strategy][criterion] = aggregated
+
+    return decision_matrix
 
 
 def average_solution(decision_matrix):
@@ -38,8 +61,29 @@ def average_solution(decision_matrix):
     dict
         criterion -> average SFN
     """
-    pass
 
+    average = {}
+
+    first_strategy = next(iter(decision_matrix))
+    criteria = decision_matrix[first_strategy].keys()
+
+    for criterion in criteria:
+
+        sfns = []
+
+        for strategy in decision_matrix:
+            sfns.append(
+                decision_matrix[strategy][criterion]
+            )
+
+        weights = [1 / len(sfns)] * len(sfns)
+
+        average[criterion] = swam(
+            sfns,
+            weights
+        )
+
+    return average
 
 def score_matrix(decision_matrix):
     """
@@ -53,7 +97,20 @@ def score_matrix(decision_matrix):
     dict
         strategy -> criterion -> score
     """
-    pass
+    scores = {}
+
+    for strategy in decision_matrix:
+
+        scores[strategy] = {}
+
+        for criterion, sfn in decision_matrix[strategy].items():
+            scores[strategy][criterion] = score(sfn)
+            # scores[strategy][criterion] = max(
+            #     0,
+            #     score(sfn)
+            # )
+
+    return scores
 
 
 def pda_nda(
@@ -74,7 +131,44 @@ def pda_nda(
     -------
     PDA, NDA
     """
-    pass
+    pda = {}
+    nda = {}
+
+    for strategy in score_matrix:
+
+        pda[strategy] = {}
+        nda[strategy] = {}
+
+        for criterion in score_matrix[strategy]:
+
+            T = score_matrix[strategy][criterion]
+            AV = average_scores[criterion]
+
+            if criterion_types[criterion] == "benefit":
+
+                pda[strategy][criterion] = max(
+                    0,
+                    T - AV
+                ) / AV
+
+                nda[strategy][criterion] = max(
+                    0,
+                    AV - T
+                ) / AV
+
+            else:
+
+                pda[strategy][criterion] = max(
+                    0,
+                    AV - T
+                ) / AV
+
+                nda[strategy][criterion] = max(
+                    0,
+                    T - AV
+                ) / AV
+
+    return pda, nda
 
 
 def weighted_sums(
@@ -93,7 +187,26 @@ def weighted_sums(
     P_plus
     N_minus
     """
-    pass
+
+    P_plus = {}
+    N_minus = {}
+
+    for strategy in pda:
+
+        p = 0
+        n = 0
+
+        for criterion in pda[strategy]:
+
+            weight = criterion_weights[criterion]
+
+            p += weight * pda[strategy][criterion]
+            n += weight * nda[strategy][criterion]
+
+        P_plus[strategy] = p
+        N_minus[strategy] = n
+
+    return P_plus, N_minus
 
 
 def normalize_scores(
@@ -110,7 +223,30 @@ def normalize_scores(
     normalized_p
     normalized_n
     """
-    pass
+
+    normalized_p = {}
+    normalized_n = {}
+
+    max_p = max(p_plus.values())
+    max_n = max(n_minus.values())
+
+    for strategy in p_plus:
+
+        if max_p == 0:
+            normalized_p[strategy] = 0
+        else:
+            normalized_p[strategy] = (
+                p_plus[strategy] / max_p
+            )
+
+        if max_n == 0:
+            normalized_n[strategy] = 1
+        else:
+            normalized_n[strategy] = (
+                1 - (n_minus[strategy] / max_n)
+            )
+
+    return normalized_p, normalized_n
 
 
 def appraisal_scores(
@@ -127,8 +263,23 @@ def appraisal_scores(
     -------
     dict
     """
-    pass
+    results = {}
 
+    for strategy in normalized_p:
+
+        results[strategy] = (
+            normalized_p[strategy]
+            +
+            normalized_n[strategy]
+        ) / 2
+
+    ranking = sorted(
+        results.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )
+
+    return ranking
 
 def sf_edas(
     strategy_evaluations_df,
