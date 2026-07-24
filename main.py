@@ -2,6 +2,8 @@ from src.loader import load_all_files, build_lingusitic_lookup
 from src.spherical_fuzzy import score
 from src.swam import swam
 from src.models import SphericalFuzzyNumber
+from src.sf_swara import sf_swara
+
 
 def run_lookup(lookup: {}):
 
@@ -37,13 +39,48 @@ def test_swam():
     print("***********************************")
     print(result)
 
+def test_swara(data, lookup):
+    # print(data["criteria"])
+    criteria_df = data["criteria"]
+    evaluations_df = data["criteria_eval"]
+    ### assume equal expertise of witness
+    expert_weights = [0.25, 0.25, 0.25, 0.25] 
+    
+    results = sf_swara(
+        criteria_df,
+        evaluations_df,
+        lookup,
+        expert_weights
+    )
+
+    print("\n***********************************")
+    print("        SF-SWARA Results")
+    print("*************************************")
+
+    print("\nAggregated SFNs")
+    for criterion, value in results["aggregated"].items():
+        print(f"{criterion}: {value}")
+
+    print("\nScores")
+    for criterion, value in results["scores"].items():
+        print(f"{criterion}: {value:.6f}")
+
+    print("\nRanking")
+    for item in results["ranking"]:
+        print(item)
+
+    print("\nNormalized Weights")
+    for criterion, weight in results["weights"].items():
+        print(f"{criterion}: {weight:.6f}")
+
 def main():
     data = load_all_files();
     lookup = build_lingusitic_lookup(data['linguistic'])
     
-    run_lookup(lookup);
-    run_scores(lookup)
-    test_swam()
+    # run_lookup(lookup);
+    # run_scores(lookup)
+    # test_swam()
+    test_swara(data, lookup)
 
 if __name__ == "__main__":
     main()
